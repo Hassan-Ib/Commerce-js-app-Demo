@@ -18,7 +18,7 @@ const Form = ({ activeStep }) =>
   activeStep === 0 ? <AddressForm /> : <PaymentForm />;
 const Confirmation = () => <div>confirmation</div>;
 const Checkout = () => {
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(0);
   const classes = useStyles();
   return (
     <>
