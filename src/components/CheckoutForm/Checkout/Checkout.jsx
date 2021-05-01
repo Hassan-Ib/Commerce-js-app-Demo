@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Paper,
   Stepper,
@@ -12,14 +12,39 @@ import {
 import useStyles from "./Styles";
 import AddressForm from "../AddressForm";
 import PaymentForm from "../PaymentForm";
+import { commerce } from "../../../lib/commerce";
 const steps = ["Shipping address", "Payment details"];
 
-const Form = ({ activeStep }) =>
-  activeStep === 0 ? <AddressForm /> : <PaymentForm />;
+const Form = ({ activeStep, checkoutToken }) =>
+  activeStep === 0 ? (
+    <AddressForm checkoutToken={checkoutToken} />
+  ) : (
+    <PaymentForm />
+  );
+
 const Confirmation = () => <div>confirmation</div>;
-const Checkout = () => {
-  const [activeStep, setActiveStep] = React.useState(0);
+
+const Checkout = ({ cart }) => {
+  const [activeStep, setActiveStep] = useState(0);
+  const [checkoutToken, setCheckoutToken] = useState(null);
+
+  React.useEffect(() => {
+    const generateToken = async () => {
+      try {
+        const token = await commerce.checkout.generateToken(cart.id, {
+          type: "cart",
+        });
+        // console.log(token);
+        setCheckoutToken(token);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    generateToken();
+  }, [cart]);
+
   const classes = useStyles();
+
   return (
     <>
       <div className={classes.toolbar}>
@@ -38,7 +63,9 @@ const Checkout = () => {
             {activeStep === steps.length ? (
               <Confirmation />
             ) : (
-              <Form activeStep={activeStep} />
+              checkoutToken && (
+                <Form activeStep={activeStep} checkoutToken={checkoutToken} />
+              )
             )}
           </Paper>
         </main>
