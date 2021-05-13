@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   InputLabel,
   Button,
@@ -30,6 +31,7 @@ const AddressForm = ({ checkoutToken }) => {
         label: name,
       }))
     );
+    // Object.keys(obj) returns an array of keys in the obj
     setShippingCountry(Object.keys(countries)[0]);
   };
 
@@ -45,6 +47,7 @@ const AddressForm = ({ checkoutToken }) => {
     );
     console.log({ subdivisions });
     setShippingSubdivisions(
+      //object.enteries of object passed to it returns an array of arrays of key-value pair of the object data
       Object.entries(subdivisions).map(([code, name]) => ({
         id: code,
         label: name,
@@ -52,7 +55,7 @@ const AddressForm = ({ checkoutToken }) => {
     );
     setShippingSubdivision(Object.keys(subdivisions)[0]);
   };
-
+  // fetching subdivision
   React.useEffect(() => {
     if (shippingCountry) fetchSubdivisions(shippingCountry);
   }, [shippingCountry]);
@@ -154,6 +157,17 @@ const AddressForm = ({ checkoutToken }) => {
               </Select>
             </Grid>
           </Grid>
+          <br />
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Button component={Link} to="/cart" variant="outlined">
+              {" "}
+              Back to Cart{" "}
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              {" "}
+              Next{" "}
+            </Button>
+          </div>
         </form>
       </FormProvider>
     </>
