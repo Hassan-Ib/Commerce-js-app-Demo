@@ -49,6 +49,7 @@ const PaymentForm = ({
           },
         },
       };
+      console.log({ orderData, checkoutToken });
       onCaptureCheckout(checkoutToken.id, orderData);
       nextStep();
     }
