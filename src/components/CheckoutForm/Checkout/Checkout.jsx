@@ -15,11 +15,15 @@ import PaymentForm from "../PaymentForm";
 import { commerce } from "../../../lib/commerce";
 const steps = ["Shipping address", "Payment details"];
 
-const Form = ({ activeStep, checkoutToken, shippingData, next }) =>
+const Form = ({ activeStep, checkoutToken, shippingData, next, backStep }) =>
   activeStep === 0 ? (
     <AddressForm next={next} checkoutToken={checkoutToken} />
   ) : (
-    <PaymentForm shippingData={shippingData} checkoutToken={checkoutToken} />
+    <PaymentForm
+      shippingData={shippingData}
+      checkoutToken={checkoutToken}
+      backStep={backStep}
+    />
   );
 
 const Confirmation = () => <div>confirmation</div>;
@@ -77,6 +81,7 @@ const Checkout = ({ cart }) => {
                   activeStep={activeStep}
                   checkoutToken={checkoutToken}
                   shippingData={shippingData}
+                  backStep={backStep}
                 />
               )
             )}
