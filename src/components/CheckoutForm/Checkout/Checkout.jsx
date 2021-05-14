@@ -15,18 +15,28 @@ import PaymentForm from "../PaymentForm";
 import { commerce } from "../../../lib/commerce";
 const steps = ["Shipping address", "Payment details"];
 
-const Form = ({ activeStep, checkoutToken }) =>
+const Form = ({ activeStep, checkoutToken, shippingData, next }) =>
   activeStep === 0 ? (
-    <AddressForm checkoutToken={checkoutToken} />
+    <AddressForm next={next} checkoutToken={checkoutToken} />
   ) : (
-    <PaymentForm />
+    <PaymentForm shippingData={shippingData} checkoutToken={checkoutToken} />
   );
 
 const Confirmation = () => <div>confirmation</div>;
 
 const Checkout = ({ cart }) => {
   const [activeStep, setActiveStep] = useState(0);
+  const [shippingData, setShippingData] = useState({});
   const [checkoutToken, setCheckoutToken] = useState(null);
+  const classes = useStyles();
+
+  const nextStep = () => setActiveStep((previous) => previous + 1);
+  const backStep = () => setActiveStep((previous) => previous - 1);
+
+  const next = (data) => {
+    setShippingData(data);
+    nextStep();
+  };
 
   React.useEffect(() => {
     const generateToken = async () => {
@@ -42,8 +52,6 @@ const Checkout = ({ cart }) => {
     };
     generateToken();
   }, [cart]);
-
-  const classes = useStyles();
 
   return (
     <>
@@ -64,7 +72,12 @@ const Checkout = ({ cart }) => {
               <Confirmation />
             ) : (
               checkoutToken && (
-                <Form activeStep={activeStep} checkoutToken={checkoutToken} />
+                <Form
+                  next={next}
+                  activeStep={activeStep}
+                  checkoutToken={checkoutToken}
+                  shippingData={shippingData}
+                />
               )
             )}
           </Paper>
