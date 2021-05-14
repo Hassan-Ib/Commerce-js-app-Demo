@@ -13,22 +13,53 @@ import useStyles from "./Styles";
 import AddressForm from "../AddressForm";
 import PaymentForm from "../PaymentForm";
 import { commerce } from "../../../lib/commerce";
+import { Link } from "react-router-dom";
+
 const steps = ["Shipping address", "Payment details"];
 
-const Form = ({ activeStep, checkoutToken, shippingData, next, backStep }) =>
+const Form = ({
+  activeStep,
+  onCaptureCheckout,
+  checkoutToken,
+  shippingData,
+  next,
+  backStep,
+  nextStep,
+}) =>
   activeStep === 0 ? (
     <AddressForm next={next} checkoutToken={checkoutToken} />
   ) : (
     <PaymentForm
+      onCaptureCheckout={onCaptureCheckout}
       shippingData={shippingData}
       checkoutToken={checkoutToken}
       backStep={backStep}
+      nextStep={nextStep}
     />
   );
 
-const Confirmation = () => <div>confirmation</div>;
+const Confirmation = ({ order, classes }) => {
+  if (!order.customer) {
+    return <CircularProgress />;
+  }
+  return (
+    <>
+      <div>
+        <Typography variant="h5">
+          Thank you for your purchase, firstName LastName
+        </Typography>
+        <Divider className={classes.divider} />
+        <Typography variant="subtitle2">Order ref : ref</Typography>
+      </div>
+      <br />
+      <Button component={Link} to="/" variant="outlined" type="button">
+        Back to Home
+      </Button>
+    </>
+  );
+};
 
-const Checkout = ({ cart }) => {
+const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [shippingData, setShippingData] = useState({});
   const [checkoutToken, setCheckoutToken] = useState(null);
@@ -82,6 +113,10 @@ const Checkout = ({ cart }) => {
                   checkoutToken={checkoutToken}
                   shippingData={shippingData}
                   backStep={backStep}
+                  nextStep={nextStep}
+                  onCaptureCheckout={onCaptureCheckout}
+                  order={order}
+                  error={error}
                 />
               )
             )}
